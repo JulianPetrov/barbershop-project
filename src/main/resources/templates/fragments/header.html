@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://thymeleaf.org ">
+
+<head th:fragment="head">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"
+          charset="ISO-8859-1">
+    <title>Cars &amp; Mobiles</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
+
+    <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="../static/js/select2.min.js"
+            th:src="@{/js/select2.min.js}"></script>
+    <script src="../static/js/script.js" th:src="@{/js/script.js}"></script>
+</head>
+<div th:fragment="navbar">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse"
+                data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span>
+            &#x2630;
+        </button>
+        <a class="navbar-brand"
+           href="#" th:href="@{/}">haircut.place</a>
+        <div id="navbar" class="collapse navbar-collapse">
+            <div class="navbar-nav">
+                <a sec:authorize="isAnonymous()" class="nav-item"><a th:href="@{/login}"
+                                                                         class="nav-link">Log in</a>
+                </a>
+                <a sec:authorize="isAnonymous()" class="nav-item"><a th:href="@{/register}"
+                                                                     class="nav-link">Register</a>
+                </a>
+                <a sec:authorize="isAuthenticated()" class="nav-item"><a th:href="@{/logout}"
+                                                                         class="nav-link">Logout</a>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+</html>
