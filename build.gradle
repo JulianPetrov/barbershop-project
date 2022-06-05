@@ -28,7 +28,7 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'org.imgscalr:imgscalr-lib:4.2'
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
-    implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.12.RELEASE'
+    implementation group: 'org.thymeleaf', name: 'thymeleaf'
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
     implementation 'commons-io:commons-io:2.11.0'
