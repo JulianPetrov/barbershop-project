@@ -16,13 +16,13 @@ import java.io.Serializable;
 public class SalonOwner {
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
   @ToString.Exclude
   private User user;
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "salon_id", referencedColumnName = "id", nullable = false)
   @ToString.Exclude
   private Salon salon;

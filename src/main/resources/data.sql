@@ -17,3 +17,8 @@ VALUES ((select id from t_user where email = 'julian@test.com'), 'ROLE_USER'),
        ((select id from t_user where email = 'test@test.com'), 'ROLE_USER'),
        ((select id from t_user where email = 'test@test.com'), 'ROLE_ADMIN');
 
+INSERT INTO service(id, name, duration_minutes)
+VALUES ((select nextval('sequence_generator')), 'Haircut', 25),
+       ((select nextval('sequence_generator')), 'Haircut and beard', 30)
+
+

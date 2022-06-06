@@ -32,6 +32,7 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
     implementation 'commons-io:commons-io:2.11.0'
+    implementation group: 'joda-time', name: 'joda-time', version: '2.10.14'
 
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 

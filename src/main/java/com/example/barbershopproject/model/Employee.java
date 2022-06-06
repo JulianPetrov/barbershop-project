@@ -34,10 +34,13 @@ public class Employee {
     @NotNull
     private String lastName;
 
-    @Column(name = "birth_date")
-    private Date birthDate;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "salon_id", referencedColumnName = "id")
     private Salon salon;
+
+    public Employee(String firstName, String lastName, Salon salon) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.salon = salon;
+    }
 }

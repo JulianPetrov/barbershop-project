@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
-    /*List<Image> findAllByCarListing_Id(Long carListingId);*/
+    List<Image> findAllBySalon_Id(Long salonId);
 }

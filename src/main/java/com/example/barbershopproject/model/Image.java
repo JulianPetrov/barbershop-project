@@ -24,12 +24,13 @@ public class Image{
   @Column(name = "name", nullable = false)
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "salon_id", referencedColumnName = "id", nullable = false)
   @ToString.Exclude
   private Salon salon;
 
-  public Image(String name) {
+  public Image(String name, Salon salon) {
     this.name = name;
+    this.salon = salon;
   }
 }

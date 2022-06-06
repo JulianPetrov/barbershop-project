@@ -1,5 +1,7 @@
 package com.example.barbershopproject.service;
 
+import com.example.barbershopproject.model.Image;
+import com.example.barbershopproject.model.Salon;
 import com.example.barbershopproject.repository.FileSystemRepository;
 import com.example.barbershopproject.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +18,12 @@ public class FileService {
   private final FileSystemRepository fileSystemRepository;
   private final ImageRepository imageRepository;
 
-  //TODO: ADJUST
- /* public void saveAllImages(List<MultipartFile> images, CarListing carListing) {
+  public void saveAllImages(List<MultipartFile> images, Salon salon) {
     int counter = 1;
     for (MultipartFile image : images) {
       try {
-        String imageName = String.format("image_%d_%d", counter, carListing.getId());
-        save(image.getBytes(), imageName, carListing);
+        String imageName = String.format("image_%d_%d", counter, salon.getId());
+        save(image.getBytes(), imageName, salon);
         counter++;
       } catch (Exception e) {
         e.printStackTrace();
@@ -30,22 +31,22 @@ public class FileService {
     }
   }
 
-  public void save(byte[] bytes, String imageName, CarListing carListing) throws Exception {
+  public void save(byte[] bytes, String imageName, Salon salon) throws Exception {
     String fileName = fileSystemRepository.save(bytes, imageName);
-    imageRepository.save(new Image(fileName, carListing));
+    imageRepository.save(new Image(fileName, salon));
   }
 
-  public List<String> getImageNamesForCarListing(Long carListingId) {
-    return imageRepository.findAllByCarListing_Id(carListingId).stream()
+  public List<String> getImageNamesForSalon(Long salonId) {
+    return imageRepository.findAllBySalon_Id(salonId).stream()
         .map(Image::getName)
         .collect(Collectors.toList());
   }
 
   public void deleteImagesOfCarListing(Long carListingId){
-    List<Image> carListingImages = imageRepository.findAllByCarListing_Id(carListingId);
+    List<Image> carListingImages = imageRepository.findAllBySalon_Id(carListingId);
     for (Image img : carListingImages) {
       fileSystemRepository.deleteImage(img.getName());
     }
     imageRepository.deleteAll(carListingImages);
-  }*/
+  }
 }

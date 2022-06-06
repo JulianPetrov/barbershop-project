@@ -3,7 +3,7 @@ package com.example.barbershopproject.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -11,6 +11,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "appointment")
 public class Appointment{
 
@@ -20,23 +21,26 @@ public class Appointment{
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
     @ToString.Exclude
     private Employee employee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     @ToString.Exclude
     private User customer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "salon_service_id", referencedColumnName = "id")
     @ToString.Exclude
-    private SalonService salonService;
+    private SalonServiceEntity salonServiceEntity;
 
-    @Column(name = "appointment_date", nullable = false)
-    private Date appointmentDate;
+    @Column(name = "appointment_start", nullable = false)
+    private LocalDateTime appointmentStart;
+
+    @Column(name = "appointment_end", nullable = false)
+    private LocalDateTime appointmentEnd;
 
     @Column(name = "is_finished", nullable = false)
     private Boolean isFinished;
