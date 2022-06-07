@@ -1,6 +1,7 @@
 package com.example.barbershopproject.controller;
 
 import com.example.barbershopproject.controller.dto.UserRegistrationDTO;
+import com.example.barbershopproject.service.SalonEntityService;
 import com.example.barbershopproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class UserController {
 
   private final UserService userService;
-
+  private final SalonEntityService salonEntityService;
 
   @GetMapping("/login")
   public String login(Model model) {
@@ -24,6 +25,7 @@ public class UserController {
 
   @GetMapping("/")
   public String home(Model model) {
+    model.addAttribute("salonsPage", salonEntityService.getFirst20Salons());
     return "index";
   }
 

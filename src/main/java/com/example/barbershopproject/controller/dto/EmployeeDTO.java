@@ -15,6 +15,6 @@ public class EmployeeDTO {
     private String lastName;
 
     @NotNull(message = "Salon required.")
-    private Salon salon;
+    private Long salonId;
 
 }

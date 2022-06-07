@@ -2,19 +2,14 @@ package com.example.barbershopproject.controller.dto;
 
 import com.example.barbershopproject.model.BService;
 import com.example.barbershopproject.model.enumeration.City;
-import com.example.barbershopproject.model.enumeration.Weekday;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class SalonCreateDTO {
+public class SalonDTO {
 
     private Long id;
 
@@ -46,5 +41,10 @@ public class SalonCreateDTO {
     private List<DayOfWeek> workdays;
 
     private List<MultipartFile> images;
+    private List<BService> services;
+
+    private Long ownerId;
+    private String ownerUsername;
+    private List<String> imageNames;
 
 }

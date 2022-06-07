@@ -1,8 +1,10 @@
 package com.example.barbershopproject.controller;
 
-import com.example.barbershopproject.controller.dto.SalonCreateDTO;
-import com.example.barbershopproject.model.SalonServiceEntity;
-import com.example.barbershopproject.service.SalonServiceEntityService;
+import com.example.barbershopproject.controller.dto.EmployeeDTO;
+import com.example.barbershopproject.controller.dto.SalonDTO;
+import com.example.barbershopproject.controller.dto.ServiceDTO;
+import com.example.barbershopproject.service.BarberServicesService;
+import com.example.barbershopproject.service.SalonEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,34 +18,84 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class SalonController {
 
-    private final SalonServiceEntityService salonServiceEntityService;
+  private final SalonEntityService salonEntityService;
+  private final BarberServicesService barberServicesService;
 
-    @ModelAttribute("salonDTO")
-    public SalonCreateDTO salonDTO() {
-        return new SalonCreateDTO();
-    }
+  @ModelAttribute("salonDTO")
+  public SalonDTO salonDTO() {
+    return new SalonDTO();
+  }
 
-    @GetMapping("/salon/create")
-    public String showSalonCreateForm(SalonCreateDTO salonCreateDTO, Model model) {
-        model.addAttribute("salonDTO", salonCreateDTO);
-        return "salon/create";
-    }
+  @ModelAttribute("employeeDTO")
+  public EmployeeDTO employeeDTO() {
+    return new EmployeeDTO();
+  }
 
-    @PostMapping("/salon/create")
-    public ModelAndView createCarListing(
-            @Valid @ModelAttribute("salonDTO") SalonCreateDTO salonDTO,
-            BindingResult bindingResult,
-            Model model)
-            throws Exception {
-        if (bindingResult.hasErrors()) {
-            return new ModelAndView(showSalonCreateForm(salonDTO, model));
-        }
-        SalonCreateDTO result = salonServiceEntityService.createSalon(salonDTO);
-        return new ModelAndView("index");
-    }
+  @GetMapping("/salon/create")
+  public String showSalonCreateForm(SalonDTO salonDTO, Model model) {
+    model.addAttribute("salonDTO", salonDTO);
+    return "salon/create";
+  }
 
-    @GetMapping("/salon/cities")
-    public @ResponseBody String getCities(@RequestParam(value = "q", required = false) String query) {
-        return salonServiceEntityService.getCitiesForDropdown(query);
+  @PostMapping("/salon/create")
+  public ModelAndView createCarListing(
+      @Valid @ModelAttribute("salonDTO") SalonDTO salonDTO,
+      BindingResult bindingResult,
+      Model model)
+      throws Exception {
+    if (bindingResult.hasErrors()) {
+      return new ModelAndView(showSalonCreateForm(salonDTO, model));
     }
+    SalonDTO result = salonEntityService.createSalon(salonDTO);
+    return new ModelAndView(showAddEmployeeForm(result.getId(), employeeDTO(), model));
+  }
+
+  @GetMapping("/salon/add-employee/{salonId}")
+  public String showAddEmployeeForm(
+      @PathVariable Long salonId, EmployeeDTO employeeDTO, Model model) {
+    employeeDTO.setSalonId(salonEntityService.getSalonById(salonId).getId());
+    model.addAttribute("employeeDTO", employeeDTO);
+    return "salon/add-employee";
+  }
+
+  @PostMapping("/salon/add-employee")
+  public ModelAndView addEmployeeToSalon(
+      @Valid @ModelAttribute("employeeDTO") EmployeeDTO employeeDTO,
+      BindingResult bindingResult,
+      Model model)
+      throws Exception {
+    if (bindingResult.hasErrors()) {
+      return new ModelAndView(showAddEmployeeForm(employeeDTO.getSalonId(), employeeDTO, model));
+    }
+    salonEntityService.addEmployeeToSalon(employeeDTO);
+    return new ModelAndView("redirect:/");
+  }
+
+  @GetMapping("/salon/add-service/{salonId}")
+  public String showAddServiceForm(
+          @PathVariable Long salonId, ServiceDTO serviceDTO, Model model) {
+    serviceDTO.setSalonId(salonEntityService.getSalonById(salonId).getId());
+    model.addAttribute("serviceDTO", serviceDTO);
+    model.addAttribute("servicesList", barberServicesService.getAllServices());
+    return "salon/add-service";
+  }
+
+  @PostMapping("/salon/add-service")
+  public ModelAndView addServiceToSalon(
+          @Valid @ModelAttribute("serviceDTO") ServiceDTO serviceDTO,
+          BindingResult bindingResult,
+          Model model)
+          throws Exception {
+    if (bindingResult.hasErrors()) {
+      return new ModelAndView(showAddServiceForm(serviceDTO.getSalonId(), serviceDTO, model));
+    }
+    salonEntityService.addServiceToSalon(serviceDTO);
+    return new ModelAndView("index");
+  }
+
+
+  @GetMapping("/salon/cities")
+  public @ResponseBody String getCities(@RequestParam(value = "q", required = false) String query) {
+    return salonEntityService.getCitiesForDropdown(query);
+  }
 }

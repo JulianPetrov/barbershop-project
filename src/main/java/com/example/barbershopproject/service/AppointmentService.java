@@ -64,8 +64,8 @@ public class AppointmentService {
         salonWorkdayRepository.findBySalon_IdAndWeekDay(salon.getId(), dayOfWeek);
     if (salonWorkday == null) return null;
 
-    LocalTime startTime = salonWorkday.getStartTime();
-    LocalTime endTime = salonWorkday.getEndTime();
+    LocalTime startTime = salon.getStartTime();
+    LocalTime endTime = salon.getEndTime();
 
     List<LocalDateTime> availableAppointmentsForEmployeeForDay =
         appointmentRepository

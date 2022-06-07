@@ -16,7 +16,7 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-src/main/resources/static/images
+src/main/resources/static/img
 
 
 ### IntelliJ IDEA ###

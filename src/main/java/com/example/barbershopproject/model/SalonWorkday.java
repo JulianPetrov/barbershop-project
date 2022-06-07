@@ -32,20 +32,12 @@ public class SalonWorkday {
   @ToString.Exclude
   private Salon salon;
 
-  @Column(name = "start_time", nullable = false)
-  private LocalTime startTime;
-
-  @Column(name = "end_time", nullable = false)
-  private LocalTime endTime;
-
   @Enumerated(EnumType.STRING)
   @Column(name = "week_day", nullable = false)
   private DayOfWeek weekDay;
 
-  public SalonWorkday(Salon salon, LocalTime startTime, LocalTime endTime, DayOfWeek weekDay) {
+  public SalonWorkday(Salon salon, DayOfWeek weekDay) {
     this.salon = salon;
-    this.startTime = startTime;
-    this.endTime = endTime;
     this.weekDay = weekDay;
   }
 }

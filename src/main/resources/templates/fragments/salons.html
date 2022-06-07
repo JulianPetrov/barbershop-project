@@ -1,0 +1,63 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://thymeleaf.org ">
+
+<div class="card mb-2" style="background: linear-gradient(rgb(175, 176, 182), rgb(245, 245, 245));"
+     th:each="salon : ${salonsPage.content}" th:fragment="salons">
+    <div class="row g-0">
+        <div class="col-md-4 mb-2">
+            <a th:href="@{/salon/{id}(id= ${salon.id})}">
+                <img th:src="@{${salon.imageNames == null || salon.imageNames.isEmpty() ? '/noimage.jpg' : '/img/' + salon.imageNames[0]}}"
+                     class="img-fluid rounded float-left"
+                     style="margin: auto"
+                     alt="No image"/>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <a th:href="@{/salon/{id}(id= ${salon.id})}">
+                            <h6 class="card-title font-weight-bold"
+                                th:text="${salon.name} + ', ' + ${salon.city} + ', ' + ${salon.address}"></h6>
+                        </a>
+                    </div>
+                </div>
+                <p class="card-text" th:text="'Opens: ' + ${salon.startTime}"></p>
+                <p class="card-text" th:text="'Closes: ' + ${salon.endTime}"></p>
+
+                <a sec:authorize="isAuthenticated()"
+                   th:href="@{/salon/add-service/{salonId}(salonId= ${salon.id})}" id="editButton"
+                   class="btn btn-primary"
+                   th:text="'Add service'"></a>
+                <!--<a sec:authorize="isAuthenticated()"
+                   th:if="${#authentication.getPrincipal().getUsername()} == ${carListing.sellerUsername}"
+                   th:href="@{/car-listing/update/{id}(id= ${carListing.id})}" id="editButton" class="btn btn-primary"
+                   th:text="'Edit listing'"></a>
+                <a sec:authorize="isAuthenticated()"
+                   th:if="${#authentication.getPrincipal().getUsername()} == ${carListing.sellerUsername}"
+                   th:href="@{/car-listing/delete/{id}(id= ${carListing.id})}" id="deleteButton" class="btn btn-danger"
+                   th:text="'Delete listing'"></a>
+                <a sec:authorize="isAuthenticated()"
+                   th:if="${carListing.isFavourite} == false"
+                   th:href="@{/car-listing/add-to-favourites/{id}(id= ${carListing.id})}" id="addToFavouritesButton"
+                   class="btn btn-outline-secondary"
+                   th:text="'Add to favourites'">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                       class="bi bi-heart" viewBox="0 0 16 16">
+                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                  </svg>
+                </a>-->
+                <!--<a sec:authorize="isAuthenticated()"
+                   th:if="${carListing.isFavourite} == true"
+                   th:href="@{/car-listing/remove-from-favourites/{id}(id= ${carListing.id})}" id="removeFromFavouritesButton"
+                   class="btn btn-secondary"
+                   th:text="'Remove from favourites'">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                       class="bi bi-heart" viewBox="0 0 16 16">
+                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                  </svg>
+                </a>-->
+            </div>
+        </div>
+    </div>
+</div>
