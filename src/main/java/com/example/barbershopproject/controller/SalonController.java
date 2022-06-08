@@ -31,6 +31,12 @@ public class SalonController {
     return new EmployeeDTO();
   }
 
+  @GetMapping("/salon/{salonId}")
+  public String showSalonDetails(@PathVariable("salonId") Long salonId, Model model) {
+    model.addAttribute("salonDTO", salonEntityService.getSalonDTO(salonId));
+    return "salon/view";
+  }
+
   @GetMapping("/salon/create")
   public String showSalonCreateForm(SalonDTO salonDTO, Model model) {
     model.addAttribute("salonDTO", salonDTO);
@@ -47,7 +53,7 @@ public class SalonController {
       return new ModelAndView(showSalonCreateForm(salonDTO, model));
     }
     SalonDTO result = salonEntityService.createSalon(salonDTO);
-    return new ModelAndView(showAddEmployeeForm(result.getId(), employeeDTO(), model));
+    return new ModelAndView(showSalonDetails(result.getId(), model));
   }
 
   @GetMapping("/salon/add-employee/{salonId}")
@@ -72,8 +78,7 @@ public class SalonController {
   }
 
   @GetMapping("/salon/add-service/{salonId}")
-  public String showAddServiceForm(
-          @PathVariable Long salonId, ServiceDTO serviceDTO, Model model) {
+  public String showAddServiceForm(@PathVariable Long salonId, ServiceDTO serviceDTO, Model model) {
     serviceDTO.setSalonId(salonEntityService.getSalonById(salonId).getId());
     model.addAttribute("serviceDTO", serviceDTO);
     model.addAttribute("servicesList", barberServicesService.getAllServices());
@@ -82,17 +87,16 @@ public class SalonController {
 
   @PostMapping("/salon/add-service")
   public ModelAndView addServiceToSalon(
-          @Valid @ModelAttribute("serviceDTO") ServiceDTO serviceDTO,
-          BindingResult bindingResult,
-          Model model)
-          throws Exception {
+      @Valid @ModelAttribute("serviceDTO") ServiceDTO serviceDTO,
+      BindingResult bindingResult,
+      Model model)
+      throws Exception {
     if (bindingResult.hasErrors()) {
       return new ModelAndView(showAddServiceForm(serviceDTO.getSalonId(), serviceDTO, model));
     }
     salonEntityService.addServiceToSalon(serviceDTO);
-    return new ModelAndView("index");
+    return new ModelAndView("redirect:/");
   }
-
 
   @GetMapping("/salon/cities")
   public @ResponseBody String getCities(@RequestParam(value = "q", required = false) String query) {

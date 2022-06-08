@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://thymeleaf.org ">
+<head th:replace="fragments/header :: head">
+</head>
+<body>
+<div th:replace="fragments/header :: navbar"></div>
+
+<div class="container">
+    <h1 class="text-center" style="padding: 1rem"
+        th:text="${salonDTO.name}"></h1>
+    <h2 class="text-center" th:text="${salonDTO.address} + ', ' + ${salonDTO.city.getDisplayValue()}"></h2>
+    <div class="d-flex justify-content-center">
+        <div id="carouselExampleControls" class="carousel slide col-lg-8 col-sm-12"
+             data-ride="carousel">
+            <div class="carousel-inner">
+                <div th:each="imageName, row : ${salonDTO.imageNames}"
+                     th:class="${row.index} == 0 ? 'carousel-item active' : 'carousel-item'">
+                    <img
+                            th:src="@{'/img/' +${imageName}}"
+                            class="d-block w-100"
+                            style="margin: auto"
+                            alt="No image"
+                    />
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+    <div class="col text-center my-2 py-3">
+        <a sec:authorize="isAuthenticated()"
+           th:if="${salonDTO.ownerUsername} == ${#authentication.getPrincipal().getUsername()}"
+           th:href="@{/salon/add-service/{salonId}(salonId= ${salonDTO.id})}"
+           class="btn btn-secondary"
+           th:text="'Add service to salon'">
+        </a>
+        <a sec:authorize="isAuthenticated()"
+           th:if="${salonDTO.ownerUsername} == ${#authentication.getPrincipal().getUsername()}"
+           th:href="@{/salon/add-employee/{salonId}(salonId= ${salonDTO.id})}"
+           class="btn btn-secondary"
+           th:text="'Add employee to salon'">
+        </a>
+        <p class="text-center" th:text="'Opens at: ' + ${salonDTO.startTime}"></p>
+        <p class="text-center" th:text="'Closes at: ' + ${salonDTO.endTime}"></p>
+        <h2 class="text-center" th:text="'We are working on'"></h2>
+        <p>
+            <span th:each="dayOfWeek, iterStat : ${salonDTO.workdays}"
+                  th:text="${dayOfWeek} + ${!iterStat.last ? ', ' : ''}"></span>
+        </p>
+
+        <h2 class="text-center" th:text="'Services'"></h2>
+        <div th:each="service, row : ${salonDTO.services}">
+            <p th:text="${service.name} + ', ' + ${service.durationMinutes} + ' minutes, ' + ${service.price} + ' BGN'"></p>
+        </div>
+
+    </div>
+
+</div>
+
+<footer th:replace="fragments/footer :: footer"/>
+</body>
+
+</html>
+

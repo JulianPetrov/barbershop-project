@@ -19,32 +19,31 @@ import java.util.List;
 @EqualsAndHashCode
 public class SalonDTO {
 
-    private Long id;
+  private Long id;
 
-    @NotNull(message = "Name required.")
-    private String name;
+  @NotNull(message = "Name required.")
+  private String name;
 
-    @NotNull(message = "Address required.")
-    private String address;
+  @NotNull(message = "Address required.")
+  private String address;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "City required.")
-    private City city;
+  @Enumerated(EnumType.STRING)
+  @NotNull(message = "City required.")
+  private City city;
 
-    @NotNull(message = "Start time required.")
-    private String startTime;
+  @NotNull(message = "Start time required.")
+  private String startTime;
 
-    @NotNull(message = "End time required.")
-    private String endTime;
+  @NotNull(message = "End time required.")
+  private String endTime;
 
-    @NotNull(message = "At least one workday is required.")
-    private List<DayOfWeek> workdays;
+  @NotNull(message = "At least one workday is required.")
+  private List<DayOfWeek> workdays;
 
-    private List<MultipartFile> images;
-    private List<BService> services;
+  private List<MultipartFile> images;
+  private List<ServiceDTO> services;
 
-    private Long ownerId;
-    private String ownerUsername;
-    private List<String> imageNames;
-
+  private Long ownerId;
+  private String ownerUsername;
+  private List<String> imageNames;
 }

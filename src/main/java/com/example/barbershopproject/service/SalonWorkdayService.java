@@ -15,7 +15,7 @@ public class SalonWorkdayService {
   private final SalonWorkdayRepository salonWorkdayRepository;
 
   public List<DayOfWeek> getWorkdayDaysOfWeekOfSalon(Long salonId) {
-    return salonWorkdayRepository.findBySalon_Id(salonId).stream()
+    return salonWorkdayRepository.findBySalon_IdOrderById(salonId).stream()
         .map(SalonWorkday::getWeekDay)
         .collect(Collectors.toList());
   }

@@ -10,5 +10,5 @@ public interface SalonWorkdayRepository
     extends JpaRepository<SalonWorkday, Long> {
     SalonWorkday findBySalon_IdAndWeekDay(Long id, DayOfWeek weekDay);
 
-    List<SalonWorkday> findBySalon_Id(Long salonId);
+    List<SalonWorkday> findBySalon_IdOrderById(Long salonId);
 }

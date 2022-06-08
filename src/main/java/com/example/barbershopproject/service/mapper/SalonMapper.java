@@ -37,7 +37,7 @@ public interface SalonMapper extends EntityMapper<SalonDTO, Salon> {
         expression = "java(convertLocalTimeToString(salon.getStartTime()))"),
     @Mapping(target = "endTime", expression = "java(convertLocalTimeToString(salon.getEndTime()))"),
     @Mapping(source = "id", target = "workdays"),
-          @Mapping(source = "id", target = "services")
+    @Mapping(source = "id", target = "services")
   })
   SalonDTO toDto(Salon salon);
 

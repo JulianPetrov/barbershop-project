@@ -5,7 +5,7 @@
      th:each="salon : ${salonsPage.content}" th:fragment="salons">
     <div class="row g-0">
         <div class="col-md-4 mb-2">
-            <a th:href="@{/salon/{id}(id= ${salon.id})}">
+            <a th:href="@{/salon/{salonId}(salonId= ${salon.id})}">
                 <img th:src="@{${salon.imageNames == null || salon.imageNames.isEmpty() ? '/noimage.jpg' : '/img/' + salon.imageNames[0]}}"
                      class="img-fluid rounded float-left"
                      style="margin: auto"
@@ -26,9 +26,9 @@
                 <p class="card-text" th:text="'Closes: ' + ${salon.endTime}"></p>
 
                 <a sec:authorize="isAuthenticated()"
-                   th:href="@{/salon/add-service/{salonId}(salonId= ${salon.id})}" id="editButton"
+                   th:href="@{/salon/{salonId}(salonId= ${salon.id})}"
                    class="btn btn-primary"
-                   th:text="'Add service'"></a>
+                   th:text="'Show details'"></a>
                 <!--<a sec:authorize="isAuthenticated()"
                    th:if="${#authentication.getPrincipal().getUsername()} == ${carListing.sellerUsername}"
                    th:href="@{/car-listing/update/{id}(id= ${carListing.id})}" id="editButton" class="btn btn-primary"

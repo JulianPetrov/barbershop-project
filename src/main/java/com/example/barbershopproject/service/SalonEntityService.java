@@ -97,4 +97,8 @@ public class SalonEntityService {
             .map(salonMapper::toDto)
             .collect(Collectors.toList()));
   }
+
+  public SalonDTO getSalonDTO(Long salonId) {
+    return salonMapper.toDto(getSalonById(salonId));
+  }
 }
