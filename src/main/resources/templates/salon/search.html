@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://thymeleaf.org ">
+
+<head th:replace="fragments/header :: head"></head>
+
+<body>
+<div th:replace="fragments/header :: navbar"></div>
+
+
+<div class="container">
+    <div class="page-header">
+        <h1>Search available salons</h1>
+    </div>
+    <form th:action="@{/salon/search}" method="post" th:object="${salonSearchDTO}"
+          enctype="multipart/form-data">
+        <div class="" id="tableData">
+            <div class="form-group col-md-6 col-12">
+                <label for="city">City</label>
+                <select id="city" class="form-control select2-single" th:field="*{city}">
+                    <option th:value="*{city} != null ? *{city} : ''"
+                            th:text="*{city} != null ? *{city.displayValue} : 'Search cities'"></option>
+                </select>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('city')}"
+                     th:errors="*{city}">Invalid choice
+                </div>
+            </div>
+
+            <div class="form-group col-lg-3 col-md-12">
+                <label class="col-form-label" for="servicesList">Service</label>
+                <select id="servicesList" th:field="*{serviceId}">
+                    <option value="-1">Select Service</option>
+                    <option th:each="service : ${serviceList}"
+                            th:value="${service.id}" th:text="${service.name}"></option>
+                </select>
+            </div>
+
+            <div class="form-group col-sm-6 col-12">
+                <div class="form-group col-sm-6 col-12">
+                    <label class="col-form-label" for="date">Date</label>:
+                    <input th:type="date" id="date"
+                           th:field="*{date}">
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}"
+                         th:errors="*{date}">Invalid date
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6 col-12">
+                <div class="form-group col-sm-6 col-12">
+                    <label class="col-form-label" for="time">Time</label>:
+                    <input th:type="time" id="time"
+                           th:field="*{time}">
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-success">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+
+</html>

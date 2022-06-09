@@ -17,6 +17,8 @@ public class ServiceDTO {
     @NotNull(message = "Price required.")
     private BigDecimal price;
 
+    private Long salonServiceId;
+
     private String name;
     private Integer durationMinutes;
 

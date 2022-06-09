@@ -41,4 +41,10 @@ public class BarberServicesService {
   public BService getServiceById(Long id) {
     return serviceRepository.findById(id).orElseThrow();
   }
+
+  public List<Salon> getSalonsByServiceId(Long serviceId) {
+    return salonServiceEntityRepository.findAllByService_Id(serviceId).stream()
+        .map(SalonServiceEntity::getSalon)
+        .collect(Collectors.toList());
+  }
 }

@@ -51,7 +51,7 @@ VALUES ((select nextval('sequence_generator')), (select id from salon where name
        ((select nextval('sequence_generator')), (select id from salon where name = 'Gentleman'),
         (select id from service where name = 'Haircut and beard'), 50),
        ((select nextval('sequence_generator')), (select id from salon where name = 'Gentleman'),
-        (select id from service where name = 'Haircut'), 40),
+        (select id from service where name = 'Haircut'), 45),
        ((select nextval('sequence_generator')), (select id from salon where name = 'Gentleman'),
         (select id from service where name = 'Hair dye'), 60);
 
@@ -71,5 +71,13 @@ VALUES ((select nextval('sequence_generator')),
         (select id from salon where name = 'Uncle Bobby')),
        ((select nextval('sequence_generator')),
         'gentleman_1.jpg',
-        (select id from salon where name = 'Gentleman'))
+        (select id from salon where name = 'Gentleman'));
+
+INSERT INTO appointment(id, appointment_start, appointment_end, is_finished, customer_id, employee_id, salon_service_id)
+VALUES ((select nextval('sequence_generator')), '2022-06-09 14:00:00.0000', '2022-06-09 14:30:00.0000', false,
+        ((select id from t_user where email = 'julian@test.com')),
+         ((select id from employee where first_name = 'Borislav')), (select id from salon_service where price = 30)),
+       ((select nextval('sequence_generator')), '2022-06-09 14:15:00.0000', '2022-06-09 15:00:00.0000', false,
+        ((select id from t_user where email = 'noadmin@test.com')),
+        ((select id from employee where first_name = 'Ivan')), (select id from salon_service where price = 40));
 

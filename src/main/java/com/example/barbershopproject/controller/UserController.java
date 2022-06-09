@@ -25,7 +25,7 @@ public class UserController {
 
   @GetMapping("/")
   public String home(Model model) {
-    model.addAttribute("salonsPage", salonEntityService.getFirst20Salons());
+    model.addAttribute("salonsList", salonEntityService.getFirst20Salons());
     return "index";
   }
 

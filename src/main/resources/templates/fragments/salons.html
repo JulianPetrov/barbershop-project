@@ -2,7 +2,7 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://thymeleaf.org ">
 
 <div class="card mb-2" style="background: linear-gradient(rgb(175, 176, 182), rgb(245, 245, 245));"
-     th:each="salon : ${salonsPage.content}" th:fragment="salons">
+     th:each="salon : ${salonsList}" th:fragment="salons">
     <div class="row g-0">
         <div class="col-md-4 mb-2">
             <a th:href="@{/salon/{salonId}(salonId= ${salon.id})}">

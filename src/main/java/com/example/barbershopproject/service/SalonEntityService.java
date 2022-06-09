@@ -2,6 +2,7 @@ package com.example.barbershopproject.service;
 
 import com.example.barbershopproject.controller.dto.EmployeeDTO;
 import com.example.barbershopproject.controller.dto.SalonDTO;
+import com.example.barbershopproject.controller.dto.SalonSearchDTO;
 import com.example.barbershopproject.controller.dto.ServiceDTO;
 import com.example.barbershopproject.model.*;
 import com.example.barbershopproject.model.enumeration.City;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +36,8 @@ public class SalonEntityService {
   private final FileService fileService;
   private final BarberServicesService barberServicesService;
   private final SalonMapper salonMapper;
+
+  private final AppointmentService appointmentService;
 
   @Transactional
   public SalonDTO createSalon(SalonDTO salonDTO) {
@@ -91,14 +97,59 @@ public class SalonEntityService {
     return salonRepository.findById(id).orElseThrow();
   }
 
-  public Page<SalonDTO> getFirst20Salons() {
-    return new PageImpl<>(
-        salonRepository.findFirst20ByOrderByNameAsc().stream()
-            .map(salonMapper::toDto)
-            .collect(Collectors.toList()));
+  public List<SalonDTO> getFirst20Salons() {
+    return salonRepository.findFirst20ByOrderByNameAsc().stream()
+        .map(salonMapper::toDto)
+        .collect(Collectors.toList());
   }
 
   public SalonDTO getSalonDTO(Long salonId) {
     return salonMapper.toDto(getSalonById(salonId));
+  }
+
+  public List<SalonDTO> searchSalons(SalonSearchDTO salonSearchDTO) {
+    List<Salon> salons = new LinkedList<>();
+    boolean isQueried = false;
+
+    if (salonSearchDTO.getCity() != null) {
+      salons.addAll(salonRepository.findAllByCity(salonSearchDTO.getCity()));
+      isQueried = true;
+    }
+
+    if (salonSearchDTO.getServiceId() != null && salonSearchDTO.getServiceId() != -1) {
+      if (isQueried) {
+        salons.retainAll(barberServicesService.getSalonsByServiceId(salonSearchDTO.getServiceId()));
+      } else {
+        salons.addAll(barberServicesService.getSalonsByServiceId(salonSearchDTO.getServiceId()));
+        isQueried = true;
+      }
+    }
+
+    if (salonSearchDTO.getDate() != null && salonSearchDTO.getTime() != null) {
+      LocalTime time = LocalTime.parse(salonSearchDTO.getTime());
+      LocalDateTime dateTime = LocalDateTime.of(salonSearchDTO.getDate(), time);
+      if (isQueried) {
+        salons.retainAll(appointmentService.getAllAvailableSalonsForDateTime(dateTime));
+      } else {
+        salons.addAll(appointmentService.getAllAvailableSalonsForDateTime(dateTime));
+      }
+    }
+
+    return salonMapper.toDto(salons);
+  }
+
+  public List<EmployeeDTO> getAllEmployeesOfSalon(Long salonId) {
+    return employeeRepository.findBySalon_Id(salonId).stream()
+        .map(this::convertEmployeeToDto)
+        .collect(Collectors.toList());
+  }
+
+  private EmployeeDTO convertEmployeeToDto(Employee employee) {
+    return EmployeeDTO.builder()
+        .id(employee.getId())
+        .firstName(employee.getFirstName())
+        .lastName(employee.getLastName())
+        .salonId(employee.getSalon().getId())
+        .build();
   }
 }

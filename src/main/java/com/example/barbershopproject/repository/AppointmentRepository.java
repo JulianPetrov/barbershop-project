@@ -9,11 +9,18 @@ import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-  List<Appointment> findAllByEmployee_IdAndAppointmentStartAfterAndAppointmentEndBefore(
+  List<Appointment> findAllByEmployee_IdAndAppointmentStartBeforeAndAppointmentEndAfter(
       Long employeeId, LocalDateTime startDate, LocalDateTime endDate);
 
+  List<Appointment>
+      findAllByEmployee_IdAndAppointmentStartLessThanEqualAndAppointmentEndGreaterThanEqual(
+          Long employeeId, LocalDateTime startDate, LocalDateTime endDate);
+
   @Query(
-      "SELECT a from Appointment a WHERE day(a.appointmentStart) = ?1 and month(a.appointmentStart) = ?2 and year(a.appointmentStart) = ?3 and a.employee.id = ?4")
+      "SELECT a from Appointment a WHERE day(a.appointmentStart) = ?1 " +
+              "and month(a.appointmentStart) = ?2 and year(a.appointmentStart) = ?3 " +
+              "and a.employee.id = ?4 " +
+              "order by a.appointmentStart asc ")
   List<Appointment> getBookedAppointmentsForEmployeeForDay(
       int day, int month, int year, long employeeId);
 }

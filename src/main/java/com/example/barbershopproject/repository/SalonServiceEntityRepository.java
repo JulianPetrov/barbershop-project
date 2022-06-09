@@ -8,4 +8,6 @@ import java.util.List;
 public interface SalonServiceEntityRepository extends JpaRepository<SalonServiceEntity, Long> {
 
     List<SalonServiceEntity> findAllBySalon_Id(Long salonId);
+
+    List<SalonServiceEntity> findAllByService_Id(Long serviceId);
 }

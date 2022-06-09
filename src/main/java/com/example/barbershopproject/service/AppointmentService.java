@@ -1,10 +1,11 @@
 package com.example.barbershopproject.service;
 
-import com.example.barbershopproject.controller.dto.AppointmentCreateDTO;
+import com.example.barbershopproject.controller.dto.AppointmentDTO;
 import com.example.barbershopproject.controller.dto.AvailableTimeslotsDTO;
 import com.example.barbershopproject.model.*;
 import com.example.barbershopproject.repository.AppointmentRepository;
 import com.example.barbershopproject.repository.EmployeeRepository;
+import com.example.barbershopproject.repository.SalonServiceEntityRepository;
 import com.example.barbershopproject.repository.SalonWorkdayRepository;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTimeComparator;
@@ -12,12 +13,16 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 @RequiredArgsConstructor
@@ -27,32 +32,101 @@ public class AppointmentService {
   private final UserService userService;
   private final EmployeeRepository employeeRepository;
   private final SalonWorkdayRepository salonWorkdayRepository;
+  private final SalonServiceEntityRepository salonServiceEntityRepository;
 
   @Transactional
-  public void createAppointment(AppointmentCreateDTO appointmentCreateDTO) {
-    SalonServiceEntity salonServiceEntity = appointmentCreateDTO.getSalonServiceEntity();
+  public AppointmentDTO createAppointment(AppointmentDTO appointmentDTO) {
+    Appointment appointment = convertToEntity(appointmentDTO);
+
+    List<Appointment> appointmentInThisTimeframe =
+        appointmentRepository.findAllByEmployee_IdAndAppointmentStartBeforeAndAppointmentEndAfter(
+            appointment.getEmployee().getId(),
+            appointment.getAppointmentStart(),
+            appointment.getAppointmentStart());
+    if (!appointmentInThisTimeframe.isEmpty()) {
+      return null;
+    }
+    appointment = appointmentRepository.save(appointment);
+    return convertToDto(appointment);
+  }
+
+  public AppointmentDTO getAppointmentDTO(Long appointmentId) {
+    return convertToDto(appointmentRepository.findById(appointmentId).orElseThrow());
+  }
+
+  private Appointment convertToEntity(AppointmentDTO appointmentDTO) {
+    SalonServiceEntity salonServiceEntity =
+        salonServiceEntityRepository.findById(appointmentDTO.getSalonServiceId()).orElseThrow();
     BService service = salonServiceEntity.getService();
     User loggedInUser = userService.getLoggedInUser();
 
-    Employee barber = appointmentCreateDTO.getBarber();
-    LocalDateTime startTime = appointmentCreateDTO.getStartTime();
+    Employee barber = employeeRepository.findById(appointmentDTO.getEmployeeId()).orElseThrow();
+    LocalDateTime startTime =
+        LocalDateTime.of(appointmentDTO.getDate(), LocalTime.parse(appointmentDTO.getTime()));
     LocalDateTime endTime = startTime.plusMinutes(service.getDurationMinutes());
-    List<Appointment> appointmentInThisTimeframe =
-        appointmentRepository.findAllByEmployee_IdAndAppointmentStartAfterAndAppointmentEndBefore(
-            barber.getId(), startTime, endTime);
-    if (!appointmentInThisTimeframe.isEmpty()) {
-      return;
-    }
+    return Appointment.builder()
+        .id(appointmentDTO.getId())
+        .customer(loggedInUser)
+        .employee(barber)
+        .salonServiceEntity(salonServiceEntity)
+        .appointmentStart(startTime)
+        .appointmentEnd(endTime)
+        .isFinished(false)
+        .build();
+  }
 
-    Appointment appointment =
-        Appointment.builder()
-            .customer(loggedInUser)
-            .employee(barber)
-            .salonServiceEntity(salonServiceEntity)
-            .appointmentStart(startTime)
-            .appointmentEnd(endTime)
-            .isFinished(false)
-            .build();
+  private AppointmentDTO convertToDto(Appointment appointment) {
+    return AppointmentDTO.builder()
+        .id(appointment.getId())
+        .salonId(appointment.getSalonServiceEntity().getSalon().getId())
+        .employeeId(appointment.getEmployee().getId())
+        .salonServiceId(appointment.getSalonServiceEntity().getId())
+        .date(appointment.getAppointmentStart().toLocalDate())
+        .time(
+            appointment
+                .getAppointmentStart()
+                .toLocalTime()
+                .format(DateTimeFormatter.ofPattern("HH:mm")))
+        .endDateTime(appointment.getAppointmentEnd())
+        .isFinished(appointment.getIsFinished())
+        .customerUsername(appointment.getCustomer().getUsername())
+        .build();
+  }
+
+  public List<Salon> getAllAvailableSalonsForDateTime(LocalDateTime dateTime) {
+    DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+    return salonWorkdayRepository.findAllByWeekDay(dayOfWeek).stream()
+        .map(SalonWorkday::getSalon)
+        .filter(salon -> salonIsAvailableForAppointment(salon, dateTime))
+        .collect(Collectors.toList());
+  }
+
+  public boolean salonIsAvailableForAppointment(Salon salon, LocalDateTime dateTime) {
+    LocalTime time = dateTime.toLocalTime();
+    DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+    SalonWorkday salonWorkday =
+        salonWorkdayRepository.findBySalon_IdAndWeekDay(salon.getId(), dayOfWeek);
+    if (salonWorkday == null) return false;
+
+    List<Employee> availableEmployees =
+        employeeRepository
+            .findAllBySalon_IdAndSalon_StartTimeLessThanEqualAndSalon_EndTimeGreaterThan(
+                salon.getId(), time, time)
+            .stream()
+            .filter(
+                employee ->
+                    getAppointmentsByEmployeeIdAndDateTime(employee.getId(), dateTime, dateTime)
+                        .isEmpty())
+            .collect(Collectors.toList());
+
+    return !availableEmployees.isEmpty();
+  }
+
+  public List<Appointment> getAppointmentsByEmployeeIdAndDateTime(
+      Long employeeId, LocalDateTime startTime, LocalDateTime endTime) {
+    return appointmentRepository
+        .findAllByEmployee_IdAndAppointmentStartLessThanEqualAndAppointmentEndGreaterThanEqual(
+            employeeId, startTime, endTime);
   }
 
   public AvailableTimeslotsDTO getAllAvailableTimeslotsOfEmployeeForDate(
@@ -93,5 +167,81 @@ public class AppointmentService {
       }
     }
     return new AvailableTimeslotsDTO(availableTimeslots);
+  }
+
+  public List<String> getAllTimesForDate(Long salonId, LocalDate date) {
+    List<String> timesForDay = new LinkedList<>();
+    DayOfWeek dayOfWeek = date.getDayOfWeek();
+    SalonWorkday salonWorkday = salonWorkdayRepository.findBySalon_IdAndWeekDay(salonId, dayOfWeek);
+    if (salonWorkday == null) return timesForDay;
+
+    Salon salon = salonWorkday.getSalon();
+    for (LocalTime time = salon.getStartTime();
+        time.isBefore(salon.getEndTime());
+        time = time.plusMinutes(15)) {
+      timesForDay.add(time.format(DateTimeFormatter.ofPattern("HH:mm")));
+    }
+    return timesForDay;
+  }
+
+  public List<String> getAllAvailableTimesForEmployeeOnDate(
+      Long employeeId, Long salonServiceId, LocalDate date) {
+    Employee employee = employeeRepository.findById(employeeId).orElseThrow();
+    Salon salon = employee.getSalon();
+    SalonServiceEntity salonService =
+        salonServiceEntityRepository.findById(salonServiceId).orElseThrow();
+    Integer serviceDurationInMinutes = salonService.getService().getDurationMinutes();
+
+    Map<String, List<Appointment>> appointmentsMap =
+        appointmentRepository
+            .getBookedAppointmentsForEmployeeForDay(
+                date.getDayOfMonth(), date.getMonthValue(), date.getYear(), employeeId)
+            .stream()
+            .collect(
+                groupingBy(
+                    a -> a.getAppointmentStart().format(DateTimeFormatter.ofPattern("HH:mm"))));
+
+    LocalDateTime tempEndTime = null;
+    List<String> availableTimes = new LinkedList<>();
+    for (String time : getAllTimesForDate(salon.getId(), date)) {
+      if (appointmentsMap.get(time) != null) {
+        Appointment appointment = appointmentsMap.get(time).get(0);
+        tempEndTime = appointment.getAppointmentEnd().minusMinutes(15);
+        continue;
+      }
+
+      if (tempEndTime != null) {
+        String formattedTempEndTime =
+            tempEndTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        if (formattedTempEndTime.equals(time)) {
+          tempEndTime = null;
+        }
+        continue;
+      }
+
+      boolean shouldSkip = false;
+      for (int i = 0; i < serviceDurationInMinutes / 15; i++) {
+        String timeWithAddedCurrentServiceDuration =
+            LocalTime.parse(time).plusMinutes(i * 15).format(DateTimeFormatter.ofPattern("HH:mm"));
+        if (appointmentsMap.get(timeWithAddedCurrentServiceDuration) != null) {
+          shouldSkip = true;
+          break;
+        }
+      }
+
+      if (!shouldSkip) availableTimes.add(time);
+    }
+
+    return availableTimes;
+
+    /*getAllTimesForDate(salon.getId(), date).stream()
+    .filter(
+        time -> {
+          LocalDateTime startTime = LocalDateTime.of(date, LocalTime.parse(time));
+          LocalDateTime endTime = startTime.plusMinutes(serviceDurationInMinutes);
+          List<Appointment> appointmentsList = getAppointmentsByEmployeeIdAndDateTime(employeeId, startTime, endTime);
+          return appointmentsList.isEmpty();
+        })
+    .collect(Collectors.toList())*/
   }
 }

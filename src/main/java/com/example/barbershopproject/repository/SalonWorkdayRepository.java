@@ -11,4 +11,6 @@ public interface SalonWorkdayRepository
     SalonWorkday findBySalon_IdAndWeekDay(Long id, DayOfWeek weekDay);
 
     List<SalonWorkday> findBySalon_IdOrderById(Long salonId);
+
+    List<SalonWorkday> findAllByWeekDay(DayOfWeek weekDay);
 }

@@ -42,11 +42,13 @@
            href="#" th:href="@{/}">haircut.place</a>
         <div id="navbar" class="collapse navbar-collapse">
             <div class="navbar-nav">
-                <a sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')" class="nav-item"><a th:href="@{/salon/create}"
-                                                                         class="nav-link">Add new salon</a>
+                <a sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')" class="nav-item"><a
+                        th:href="@{/salon/create}"
+                        class="nav-link">Add new salon</a>
                 </a>
+                <a class="nav-item"><a th:href="@{/salon/search}" class="nav-link">Search</a> </a>
                 <a sec:authorize="isAnonymous()" class="nav-item"><a th:href="@{/login}"
-                                                                         class="nav-link">Log in</a>
+                                                                     class="nav-link">Log in</a>
                 </a>
                 <a sec:authorize="isAnonymous()" class="nav-item"><a th:href="@{/register}"
                                                                      class="nav-link">Register</a>

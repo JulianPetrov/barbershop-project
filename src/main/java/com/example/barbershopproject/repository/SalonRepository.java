@@ -2,6 +2,7 @@ package com.example.barbershopproject.repository;
 
 import com.example.barbershopproject.model.QSalon;
 import com.example.barbershopproject.model.Salon;
+import com.example.barbershopproject.model.enumeration.City;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,8 @@ public interface SalonRepository
         QuerydslBinderCustomizer<QSalon> {
 
   List<Salon> findFirst20ByOrderByNameAsc();
+
+  List<Salon> findAllByCity(City city);
 
   @Override
   default void customize(QuerydslBindings bindings, QSalon root) {
