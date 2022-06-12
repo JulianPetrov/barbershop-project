@@ -12,7 +12,7 @@
     <div class="page-header">
         <h1>Create new appointment</h1>
     </div>
-    <form id = "createAppointmentForm" th:action="@{/appointment/create}" method="post" th:object="${appointmentDTO}"
+    <form id="createAppointmentForm" th:action="@{/appointment/create}" method="post" th:object="${appointmentDTO}"
           enctype="multipart/form-data">
         <div class="" id="tableData">
             <div class="form-group col-sm-6 col-12">
@@ -20,26 +20,27 @@
                 <input type="hidden" th:field="*{salonId}" id="salonId">
 
                 <div class="form-group col-sm-6 col-12">
-                        <label class="col-form-label" for="createAppointmentDate">Date</label>:
-                        <input th:type="date" id="createAppointmentDate"
-                               th:field="*{date}">
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}"
-                             th:errors="*{date}">Invalid date
-                        </div>
+                    <label class="col-form-label" for="createAppointmentDate">Date</label>:
+                    <input th:type="date" id="createAppointmentDate"
+                           th:field="*{date}" th:required="required">
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}"
+                         th:errors="*{date}">Invalid date
+                    </div>
                 </div>
 
                 <div class="form-group col-lg-6 col-md-12">
                     <label class="col-form-label" for="createAppointmentEmployee">Choose barber</label>
-                    <select id="createAppointmentEmployee" th:field="*{employeeId}">
+                    <select id="createAppointmentEmployee" th:field="*{employeeId}" th:required="required">
                         <option value="-1">Select Employee</option>
                         <option th:each="employee : ${employees}"
-                                th:value="${employee.id}" th:text="${employee.firstName} + ' ' + ${employee.lastName}"></option>
+                                th:value="${employee.id}"
+                                th:text="${employee.firstName} + ' ' + ${employee.lastName}"></option>
                     </select>
                 </div>
 
                 <div class="form-group col-lg-3 col-md-12">
                     <label class="col-form-label" for="createAppointmentServicesList">Service</label>
-                    <select id="createAppointmentServicesList" th:field="*{salonServiceId}">
+                    <select id="createAppointmentServicesList" th:field="*{salonServiceId}" th:required="required">
                         <option value="-1">Select Service</option>
                         <option th:each="service : ${services}"
                                 th:value="${service.salonServiceId}"
@@ -49,15 +50,17 @@
 
                 <div class="form-group col-lg-6 col-md-12">
                     <label class="col-form-label" for="createAppointmentTime">Time</label>
-                    <select id="createAppointmentTime" th:field="*{time}">
+                    <select id="createAppointmentTime" th:field="*{time}" th:required="t">
                         <option value="-1">Select from available times</option>
                     </select>
                 </div>
 
 
-
-            <div class="form-group col-md-12">
-                <button type="submit" class="btn btn-success">Create appointment</button>
+                <div class="form-group col-md-12">
+                    <button id="createAppointmentBtn" type="submit" class="btn btn-success" disabled>Create
+                        appointment
+                    </button>
+                </div>
             </div>
         </div>
     </form>

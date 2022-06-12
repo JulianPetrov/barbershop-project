@@ -1,32 +1,32 @@
 $(document).ready(function () {
 
-/*    $("#createAppointmentDate").change(function () {
-        let date = $(this).val();
-        let s = '<option value=' + '00:00' + '>Select from available times</option>';
-        if (date !== null) {
-            $.ajax({
-                url: '/salon/available-times',
-                data: {"date": date},
-                success: function (result) {
-                    result = JSON.parse(result);
-                    for (let i = 0; i < result.length; i++) {
-                        s += '<option value="' + result[i] + '">' + result[i] + '</option>';
-                    }
-                    $('#createAppointmentTime').html(s);
-                }
-            });
-        }
-    });*/
+    $("#searchDate").change(function () {
 
+        let searchDateVal = $(this).val();
+        $("#searchTime").prop("readonly",
+            searchDateVal === undefined || searchDateVal === null || searchDateVal === '');
+    })
+
+    $("#searchTime").change(function () {
+        let searchTimeVal = $(this).val();
+        $("#searchBtn").prop("disabled",
+            (searchTimeVal === undefined || searchTimeVal === null || searchTimeVal === ''))
+    })
+
+    $("#createAppointmentTime").change(function () {
+        let timeVal = $(this).val();
+        $("#createAppointmentBtn").prop("disabled",
+            (timeVal === undefined || timeVal === null || timeVal === '-1'))
+    })
 
     $("#createAppointmentForm").find("#createAppointmentDate, #createAppointmentEmployee, #createAppointmentServicesList")
         .change(function (event) {
-        event.preventDefault();
-        ajaxGetAvailableTimes();
-    });
+            event.preventDefault();
+            ajaxGetAvailableTimes();
+        });
 
 
-    function ajaxGetAvailableTimes(){
+    function ajaxGetAvailableTimes() {
         let queryParams = getQueryParamsFromCreateAppointmentForm();
         $.ajax({
             type: "GET",
