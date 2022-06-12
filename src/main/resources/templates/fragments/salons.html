@@ -35,6 +35,11 @@
                    th:href="@{/salon/{salonId}/manage-appointments(salonId= ${salon.id})}"
                    class="btn btn-primary"
                    th:text="'Manage appointments'"></a>
+                <a sec:authorize="isAuthenticated() && hasRole('ADMIN')"
+                   th:if="${#authentication.getPrincipal().getUsername()} == ${salon.ownerUsername}"
+                   th:href="@{/salon/edit/{salonId}(salonId= ${salon.id})}"
+                   class="btn btn-warning"
+                   th:text="'Edit salon info'"></a>
             </div>
         </div>
     </div>

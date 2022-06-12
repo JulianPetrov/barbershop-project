@@ -6,10 +6,7 @@ import com.example.barbershopproject.service.BarberServicesService;
 import com.example.barbershopproject.service.FileService;
 import com.example.barbershopproject.service.SalonWorkdayService;
 import com.example.barbershopproject.service.UserService;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +24,9 @@ public interface SalonMapper extends EntityMapper<SalonDTO, Salon> {
 
   @Mapping(source = "ownerId", target = "owner")
   Salon toEntity(SalonDTO salonDTO);
+
+  @Mapping(source = "ownerId", target = "owner")
+  void updateEntity(SalonDTO salonDTO, @MappingTarget Salon salon);
 
   @Mappings({
     @Mapping(source = "owner.id", target = "ownerId"),

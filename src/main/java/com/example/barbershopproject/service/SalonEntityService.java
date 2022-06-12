@@ -46,12 +46,27 @@ public class SalonEntityService {
 
     fileService.saveAllImages(salonDTO.getImages(), salon);
 
+    saveSalonWorkdays(salonDTO, salon);
+    return salonMapper.toDto(salon);
+  }
+
+  @Transactional
+  public SalonDTO updateSalon(SalonDTO salonDTO) {
+    Salon salon = salonRepository.findById(salonDTO.getId()).orElseThrow();
+    salonMapper.updateEntity(salonDTO, salon);
+    salon = salonRepository.save(salon);
+
+    salonWorkdayRepository.deleteAllBySalonId(salonDTO.getId());
+    saveSalonWorkdays(salonDTO, salon);
+    return salonMapper.toDto(salon);
+  }
+
+  private void saveSalonWorkdays(SalonDTO salonDTO, Salon salon) {
     List<SalonWorkday> workdays = new LinkedList<>();
     for (DayOfWeek dayOfWeek : salonDTO.getWorkdays()) {
       workdays.add(new SalonWorkday(salon, dayOfWeek));
     }
     salonWorkdayRepository.saveAll(workdays);
-    return salonMapper.toDto(salon);
   }
 
   public void addEmployeeToSalon(EmployeeDTO employeeDTO) {

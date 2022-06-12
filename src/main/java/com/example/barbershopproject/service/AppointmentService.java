@@ -76,7 +76,6 @@ public class AppointmentService {
         .salonServiceEntity(salonServiceEntity)
         .appointmentStart(startTime)
         .appointmentEnd(endTime)
-        .isFinished(false)
         .build();
   }
 
@@ -96,7 +95,6 @@ public class AppointmentService {
                 .toLocalTime()
                 .format(DateTimeFormatter.ofPattern("HH:mm")))
         .endDateTime(appointment.getAppointmentEnd())
-        .isFinished(appointment.getIsFinished())
         .customerUsername(customer.getUsername())
         .canBeCancelled(
             userService.userIsLoggedIn()

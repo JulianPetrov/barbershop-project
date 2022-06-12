@@ -62,6 +62,27 @@ public class SalonController {
     return new ModelAndView(showSalonDetails(result.getId(), model));
   }
 
+  @GetMapping("/salon/edit/{salonId}")
+  public String showSalonEditForm(@PathVariable Long salonId, Model model) {
+    model.addAttribute("salonDTO", salonEntityService.getSalonDTO(salonId));
+    return "salon/edit";
+  }
+
+  @PostMapping("/salon/edit")
+  public ModelAndView editSalon(
+      @Valid @ModelAttribute("salonDTO") SalonDTO salonDTO,
+      BindingResult bindingResult,
+      Model model) {
+    if (salonDTO.getId() == null) {
+      return new ModelAndView("index");
+    }
+    if (bindingResult.hasErrors()) {
+      return new ModelAndView(showSalonEditForm(salonDTO.getId(), model));
+    }
+    SalonDTO result = salonEntityService.updateSalon(salonDTO);
+    return new ModelAndView(showSalonDetails(result.getId(), model));
+  }
+
   @GetMapping("/salon/add-employee/{salonId}")
   public String showAddEmployeeForm(
       @PathVariable Long salonId, EmployeeDTO employeeDTO, Model model) {
@@ -116,17 +137,17 @@ public class SalonController {
 
   @PostMapping("/salon/search")
   public ModelAndView searchSalon(
-          @Valid @ModelAttribute("salonSearchDTO") SalonSearchDTO salonSearchDTO,
-          BindingResult bindingResult,
-          Model model) {
+      @Valid @ModelAttribute("salonSearchDTO") SalonSearchDTO salonSearchDTO,
+      BindingResult bindingResult,
+      Model model) {
     List<SalonDTO> result = salonEntityService.searchSalons(salonSearchDTO);
     model.addAttribute("salonsList", result);
     return new ModelAndView("salon/index");
   }
 
   @GetMapping("/salon/my-salons")
-  public String getMySalons(Model model){
-    model.addAttribute("salonsList",salonEntityService.getSalonsOfOwner());
+  public String getMySalons(Model model) {
+    model.addAttribute("salonsList", salonEntityService.getSalonsOfOwner());
     return "salon/index";
   }
 }

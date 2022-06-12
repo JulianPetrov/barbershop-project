@@ -41,7 +41,4 @@ public class Appointment{
 
     @Column(name = "appointment_end", nullable = false)
     private LocalDateTime appointmentEnd;
-
-    @Column(name = "is_finished", nullable = false)
-    private Boolean isFinished;
 }

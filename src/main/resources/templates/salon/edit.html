@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://thymeleaf.org ">
+
+<head th:replace="fragments/header :: head"></head>
+
+<body>
+<div th:replace="fragments/header :: navbar"></div>
+
+
+<div class="container">
+    <div class="page-header">
+        <h1>Create New Salon</h1>
+    </div>
+    <form th:action="@{/salon/edit}" method="post" th:object="${salonDTO}"
+          enctype="multipart/form-data">
+
+        <input type="hidden" id="id" th:field="*{id}"/>
+        <input type="hidden" id="ownerId" th:field="*{ownerId}"/>
+
+
+        <div class="" id="tableData">
+            <div class="form-group col-sm-6 col-12">
+                <label class="col-form-label" for="name">Salon name</label>:
+                <input th:type="text" th:maxlength="64" id="name"
+                       th:field="*{name}">
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}"
+                     th:errors="*{name}">Invalid name
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 col-12">
+                <label for="city">City</label>
+                <select id="city" class="form-control select2-single" th:field="*{city}">
+                    <option th:value="*{city} != null ? *{city} : ''"
+                            th:text="*{city} != null ? *{city.displayValue} : 'Search cities'"></option>
+                </select>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('city')}"
+                     th:errors="*{city}">Invalid choice
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6 col-12">
+                <label class="col-form-label" for="address">Address</label>:
+                <input th:type="text" th:maxlength="64" id="address"
+                       th:field="*{address}">
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('address')}"
+                     th:errors="*{address}">Invalid address
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6 col-12">
+                <label class="col-form-label" for="startTime">Start time</label>:
+                <input th:type="time" id="startTime"
+                       th:field="*{startTime}">
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('startTime')}"
+                     th:errors="*{startTime}">Invalid start time
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6 col-12">
+                <label class="col-form-label" for="endTime">End time</label>:
+                <input th:type="time" id="endTime"
+                       th:field="*{endTime}">
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('startTime')}"
+                     th:errors="*{endTime}">Invalid end time
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-12">
+                <label class="col-form-label" for="workdays">Workdays</label>:
+                <select class="multiple-select-dropdown workday-placeholder" style="width: 100%" id="workdays"
+                        th:field="*{workdays}" multiple="multiple">
+                    <option th:each="dayOfWeek : ${T(java.time.DayOfWeek).values()}"
+                            th:value="${dayOfWeek}" th:text="${dayOfWeek}"></option>
+                </select>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('workdays')}"
+                     th:errors="*{workdays}">Invalid workdays
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-success">Update</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+
+</html>
