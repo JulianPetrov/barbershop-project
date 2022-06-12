@@ -76,10 +76,13 @@ public class AppointmentService {
   }
 
   private AppointmentDTO convertToDto(Appointment appointment) {
+    Salon salon = appointment.getSalonServiceEntity().getSalon();
+    Employee employee = appointment.getEmployee();
+    User customer = appointment.getCustomer();
     return AppointmentDTO.builder()
         .id(appointment.getId())
-        .salonId(appointment.getSalonServiceEntity().getSalon().getId())
-        .employeeId(appointment.getEmployee().getId())
+        .salonId(salon.getId())
+        .employeeId(employee.getId())
         .salonServiceId(appointment.getSalonServiceEntity().getId())
         .date(appointment.getAppointmentStart().toLocalDate())
         .time(
@@ -89,7 +92,17 @@ public class AppointmentService {
                 .format(DateTimeFormatter.ofPattern("HH:mm")))
         .endDateTime(appointment.getAppointmentEnd())
         .isFinished(appointment.getIsFinished())
-        .customerUsername(appointment.getCustomer().getUsername())
+        .customerUsername(customer.getUsername())
+        .canBeCancelled(
+            userService.userIsLoggedIn()
+                && (userService.getLoggedInUser().getAuthorities().stream()
+                        .anyMatch(a -> a.getName().equals("ADMIN"))
+                    || userService.getLoggedInUser().getUsername().equals(customer.getUsername()))
+                && appointment.getAppointmentStart().isAfter(LocalDateTime.now().minusMinutes(60)))
+        .salonName(salon.getName())
+        .customerFullName(String.format("%s %s", customer.getFirstName(), customer.getLastName()))
+        .employeeFullName(String.format("%s %s", employee.getFirstName(), employee.getLastName()))
+        .startDateTime(appointment.getAppointmentStart())
         .build();
   }
 
@@ -243,5 +256,20 @@ public class AppointmentService {
           return appointmentsList.isEmpty();
         })
     .collect(Collectors.toList())*/
+  }
+
+  public void cancelAppointmentById(Long appointmentId) {
+    AppointmentDTO appointmentDTO = getAppointmentDTO(appointmentId);
+    if (appointmentDTO.isCanBeCancelled()) {
+      appointmentRepository.deleteById(appointmentId);
+    }
+  }
+
+  public List<AppointmentDTO> getAllAppointmentsOfUser() {
+    return appointmentRepository
+        .findAllByCustomer_Id(userService.getLoggedInUser().getId())
+        .stream()
+        .map(this::convertToDto)
+        .collect(Collectors.toList());
   }
 }

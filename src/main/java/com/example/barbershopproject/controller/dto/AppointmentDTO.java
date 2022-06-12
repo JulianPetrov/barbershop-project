@@ -39,5 +39,15 @@ public class AppointmentDTO {
 
     private String customerUsername;
 
+    //Fields needed for view
+    private String salonName;
+
+    @Builder.Default
+    private boolean canBeCancelled = false;
+
+    private String employeeFullName;
+    private String customerFullName;
+    private LocalDateTime startDateTime;
+
 
 }

@@ -51,7 +51,7 @@ public class AppointmentController {
           showCreateAppointmentForm(appointmentDTO.getSalonId(), appointmentDTO, model));
     }
     AppointmentDTO result = appointmentService.createAppointment(appointmentDTO);
-    return new ModelAndView(showAppointmentDetails(result.getId(), model));
+    return new ModelAndView(getAllAppointmentsOfUser(model));
   }
 
   @GetMapping("/appointment/{appointmentId}")
@@ -59,6 +59,21 @@ public class AppointmentController {
       @PathVariable("appointmentId") Long appointmentId, Model model) {
     model.addAttribute("appointmentDTO", appointmentService.getAppointmentDTO(appointmentId));
     return "appointment/view";
+  }
+
+  @GetMapping("/appointment/my-appointments")
+  public String getAllAppointmentsOfUser(Model model) {
+    List<AppointmentDTO> appointmentsList = appointmentService.getAllAppointmentsOfUser();
+    model.addAttribute("appointmentsList", appointmentsList);
+    return "appointment/index";
+  }
+
+
+  @GetMapping("/appointment/{appointmentId}/cancel")
+  public ModelAndView cancelAppointment(
+          @PathVariable("appointmentId") Long appointmentId, Model model) {
+    appointmentService.cancelAppointmentById(appointmentId);
+    return new ModelAndView(getAllAppointmentsOfUser(model));
   }
 
   @GetMapping("/salon/available-times")

@@ -23,4 +23,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
               "order by a.appointmentStart asc ")
   List<Appointment> getBookedAppointmentsForEmployeeForDay(
       int day, int month, int year, long employeeId);
+
+  List<Appointment> findAllByCustomer_Id(Long customerId);
+
+  List<Appointment> findAllBySalonServiceEntity_Salon_IdIn(List<Long> salonIds);
 }

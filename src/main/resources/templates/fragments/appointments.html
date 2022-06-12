@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://thymeleaf.org ">
+
+<div class="card mb-2" style="background: linear-gradient(rgb(175, 176, 182), rgb(245, 245, 245));"
+     th:each="appointment : ${appointmentsList}" th:fragment="appointments">
+    <div class="row g-0">
+        <div class="col-md-12">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h3 class="card-title font-weight-bold" th:text="${appointment.salonName}"></h3>
+                    </div>
+                </div>
+                <p class="card-text" th:text="'Appointment start: ' + ${appointment.startDateTime}"></p>
+                <p class="card-text" th:text="'Appointment end: ' + ${appointment.endDateTime}"></p>
+                <p class="card-text" th:text="'Customer: ' + ${appointment.customerFullName}"></p>
+                <p class="card-text" th:text="'Barber: ' + ${appointment.employeeFullName}"></p>
+
+                <a th:if="${appointment.canBeCancelled}"
+                   th:href="@{/appointment/{appointmentId}/cancel(appointmentId= ${appointment.id})}"
+                   class="btn btn-danger"
+                   th:text="'Cancel appointment'"
+                   th:data-confirm-delete="|Are you sure you want to cancel this appointment?|"
+                   onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false"
+                ></a>
+            </div>
+        </div>
+    </div>
+</div>

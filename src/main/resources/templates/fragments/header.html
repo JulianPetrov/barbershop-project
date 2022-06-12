@@ -46,6 +46,10 @@
                         th:href="@{/salon/create}"
                         class="nav-link">Add new salon</a>
                 </a>
+                <a sec:authorize="isAuthenticated()" class="nav-item"><a
+                        th:href="@{/appointment/my-appointments}"
+                        class="nav-link">My appointments</a>
+                </a>
                 <a class="nav-item"><a th:href="@{/salon/search}" class="nav-link">Search</a> </a>
                 <a sec:authorize="isAnonymous()" class="nav-item"><a th:href="@{/login}"
                                                                      class="nav-link">Log in</a>

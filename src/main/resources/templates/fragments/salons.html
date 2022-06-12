@@ -17,18 +17,19 @@
                 <div class="row">
                     <div class="col-md-8">
                         <a th:href="@{/salon/{id}(id= ${salon.id})}">
-                            <h6 class="card-title font-weight-bold"
-                                th:text="${salon.name} + ', ' + ${salon.city} + ', ' + ${salon.address}"></h6>
+                            <h3 class="card-title font-weight-bold" th:text="${salon.name}"></h3>
                         </a>
+                        <h6 class="card-title"
+                            th:text="${salon.city} + ', ' + ${salon.address}"></h6>
                     </div>
                 </div>
                 <p class="card-text" th:text="'Opens: ' + ${salon.startTime}"></p>
                 <p class="card-text" th:text="'Closes: ' + ${salon.endTime}"></p>
 
                 <a sec:authorize="isAuthenticated()"
-                   th:href="@{/salon/{salonId}(salonId= ${salon.id})}"
+                   th:href="@{/salon/{salonId}/appointment/create(salonId= ${salon.id})}"
                    class="btn btn-primary"
-                   th:text="'Show details'"></a>
+                   th:text="'Book an appointment'"></a>
                 <!--<a sec:authorize="isAuthenticated()"
                    th:if="${#authentication.getPrincipal().getUsername()} == ${carListing.sellerUsername}"
                    th:href="@{/car-listing/update/{id}(id= ${carListing.id})}" id="editButton" class="btn btn-primary"
