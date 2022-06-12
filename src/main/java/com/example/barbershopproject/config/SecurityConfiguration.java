@@ -46,8 +46,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.csrf()
         .disable()
         .authorizeRequests()
-        .antMatchers("/car-listing/create", "/car-listing/update/**") // TODO: Adjust with new endpoints
-        .authenticated()
+        .antMatchers("/salon/create", "/salon/update/**")
+        .hasRole("ADMIN")
         .antMatchers(
             "/v2/api-docs",
             "/configuration/ui",
@@ -62,7 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/images/**",
             "/static/favicon.ico",
             "/index.html)",
-            "/car-listing/**")
+            "/salon/**")
         .permitAll()
         .and()
         .formLogin()
