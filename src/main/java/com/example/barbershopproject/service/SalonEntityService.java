@@ -12,14 +12,11 @@ import com.example.barbershopproject.service.mapper.SalonMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -151,5 +148,11 @@ public class SalonEntityService {
         .lastName(employee.getLastName())
         .salonId(employee.getSalon().getId())
         .build();
+  }
+
+  public List<SalonDTO> getSalonsOfOwner() {
+    return salonRepository.findAllByOwner_Id(userService.getLoggedInUser().getId()).stream()
+        .map(salonMapper::toDto)
+        .collect(Collectors.toList());
   }
 }

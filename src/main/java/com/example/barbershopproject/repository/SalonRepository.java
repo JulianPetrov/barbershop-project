@@ -22,6 +22,8 @@ public interface SalonRepository
 
   List<Salon> findAllByCity(City city);
 
+  List<Salon> findAllByOwner_Id(Long ownerId);
+
   @Override
   default void customize(QuerydslBindings bindings, QSalon root) {
     bindings

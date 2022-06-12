@@ -96,9 +96,9 @@ public class AppointmentService {
         .canBeCancelled(
             userService.userIsLoggedIn()
                 && (userService.getLoggedInUser().getAuthorities().stream()
-                        .anyMatch(a -> a.getName().equals("ADMIN"))
+                        .anyMatch(a -> a.getName().equals("ROLE_ADMIN"))
                     || userService.getLoggedInUser().getUsername().equals(customer.getUsername()))
-                && appointment.getAppointmentStart().isAfter(LocalDateTime.now().minusMinutes(60)))
+                && appointment.getAppointmentStart().isAfter(LocalDateTime.now().plusMinutes(60)))
         .salonName(salon.getName())
         .customerFullName(String.format("%s %s", customer.getFirstName(), customer.getLastName()))
         .employeeFullName(String.format("%s %s", employee.getFirstName(), employee.getLastName()))
@@ -269,6 +269,12 @@ public class AppointmentService {
     return appointmentRepository
         .findAllByCustomer_Id(userService.getLoggedInUser().getId())
         .stream()
+        .map(this::convertToDto)
+        .collect(Collectors.toList());
+  }
+
+  public List<AppointmentDTO> getAllAppointmentsOfSalon(Long salonId) {
+    return appointmentRepository.findAllBySalonServiceEntity_Salon_Id(salonId).stream()
         .map(this::convertToDto)
         .collect(Collectors.toList());
   }

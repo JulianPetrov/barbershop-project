@@ -68,10 +68,16 @@ public class AppointmentController {
     return "appointment/index";
   }
 
+  @GetMapping("/salon/{salonId}/manage-appointments")
+  public String showAllAppointmentsInOwnersSalons(
+      @PathVariable("salonId") Long salonId, Model model) {
+    model.addAttribute("appointmentsList", appointmentService.getAllAppointmentsOfSalon(salonId));
+    return "appointment/index";
+  }
 
   @GetMapping("/appointment/{appointmentId}/cancel")
   public ModelAndView cancelAppointment(
-          @PathVariable("appointmentId") Long appointmentId, Model model) {
+      @PathVariable("appointmentId") Long appointmentId, Model model) {
     appointmentService.cancelAppointmentById(appointmentId);
     return new ModelAndView(getAllAppointmentsOfUser(model));
   }
@@ -84,7 +90,8 @@ public class AppointmentController {
     String responseJson = null;
     List<String> availableTimes = new LinkedList<>();
     if (employeeId != null && date != null) {
-      availableTimes.addAll(appointmentService.getAllAvailableTimesForEmployeeOnDate(employeeId, serviceId, date));
+      availableTimes.addAll(
+          appointmentService.getAllAvailableTimesForEmployeeOnDate(employeeId, serviceId, date));
     }
     try {
       responseJson = new ObjectMapper().writeValueAsString(availableTimes);

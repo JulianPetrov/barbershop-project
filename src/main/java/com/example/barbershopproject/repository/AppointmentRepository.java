@@ -26,5 +26,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
   List<Appointment> findAllByCustomer_Id(Long customerId);
 
-  List<Appointment> findAllBySalonServiceEntity_Salon_IdIn(List<Long> salonIds);
+  @Query("SELECT a FROM Appointment a WHERE a.salonServiceEntity.salon.id = ?1")
+  List<Appointment> findAllBySalonServiceEntity_Salon_Id(Long salonId);
 }

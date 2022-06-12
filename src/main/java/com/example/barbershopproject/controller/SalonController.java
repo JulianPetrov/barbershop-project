@@ -123,4 +123,10 @@ public class SalonController {
     model.addAttribute("salonsList", result);
     return new ModelAndView("salon/index");
   }
+
+  @GetMapping("/salon/my-salons")
+  public String getMySalons(Model model){
+    model.addAttribute("salonsList",salonEntityService.getSalonsOfOwner());
+    return "salon/index";
+  }
 }
