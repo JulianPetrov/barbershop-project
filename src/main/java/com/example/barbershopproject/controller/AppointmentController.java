@@ -89,7 +89,7 @@ public class AppointmentController {
       @RequestParam(required = false) LocalDate date) {
     String responseJson = null;
     List<String> availableTimes = new LinkedList<>();
-    if (employeeId != null && date != null) {
+    if (employeeId != null && date != null && serviceId != null) {
       availableTimes.addAll(
           appointmentService.getAllAvailableTimesForEmployeeOnDate(employeeId, serviceId, date));
     }

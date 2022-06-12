@@ -7,6 +7,8 @@ import com.example.barbershopproject.repository.AppointmentRepository;
 import com.example.barbershopproject.repository.EmployeeRepository;
 import com.example.barbershopproject.repository.SalonServiceEntityRepository;
 import com.example.barbershopproject.repository.SalonWorkdayRepository;
+import com.example.barbershopproject.service.email.EmailDetails;
+import com.example.barbershopproject.service.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTimeComparator;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class AppointmentService {
   private final EmployeeRepository employeeRepository;
   private final SalonWorkdayRepository salonWorkdayRepository;
   private final SalonServiceEntityRepository salonServiceEntityRepository;
+  private final EmailService emailService;
 
   @Transactional
   public AppointmentDTO createAppointment(AppointmentDTO appointmentDTO) {
@@ -47,8 +50,10 @@ public class AppointmentService {
       return null;
     }
     appointment = appointmentRepository.save(appointment);
+    emailService.sendAppointmentConfirmationEmail(appointment);
     return convertToDto(appointment);
   }
+
 
   public AppointmentDTO getAppointmentDTO(Long appointmentId) {
     return convertToDto(appointmentRepository.findById(appointmentId).orElseThrow());
@@ -260,8 +265,10 @@ public class AppointmentService {
 
   public void cancelAppointmentById(Long appointmentId) {
     AppointmentDTO appointmentDTO = getAppointmentDTO(appointmentId);
+    Appointment appointment = appointmentRepository.getById(appointmentId);
     if (appointmentDTO.isCanBeCancelled()) {
       appointmentRepository.deleteById(appointmentId);
+      emailService.sendAppointmentCancellationEmail(appointment);
     }
   }
 
