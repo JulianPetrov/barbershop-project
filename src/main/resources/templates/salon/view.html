@@ -49,8 +49,8 @@
            th:text="'Add employee to salon'">
         </a>
         <a sec:authorize="isAuthenticated() && hasRole('ADMIN')"
-           th:if="${#authentication.getPrincipal().getUsername()} == ${salon.ownerUsername}"
-           th:href="@{/salon/edit/{salonId}(salonId= ${salon.id})}"
+           th:if="${#authentication.getPrincipal().getUsername()} == ${salonDTO.ownerUsername}"
+           th:href="@{/salon/edit/{salonId}(salonId= ${salonDTO.id})}"
            class="btn btn-warning"
            th:text="'Edit salon info'"></a>
         <p class="text-center" th:text="'Opens at: ' + ${salonDTO.startTime}"></p>

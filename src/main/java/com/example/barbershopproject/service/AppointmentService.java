@@ -50,7 +50,8 @@ public class AppointmentService {
       return null;
     }
     appointment = appointmentRepository.save(appointment);
-    emailService.sendAppointmentConfirmationEmail(appointment);
+    emailService.sendAppointmentConfirmationEmail(appointment, false);
+    emailService.sendAppointmentConfirmationEmail(appointment, true);
     return convertToDto(appointment);
   }
 
@@ -266,7 +267,8 @@ public class AppointmentService {
     Appointment appointment = appointmentRepository.getById(appointmentId);
     if (appointmentDTO.isCanBeCancelled()) {
       appointmentRepository.deleteById(appointmentId);
-      emailService.sendAppointmentCancellationEmail(appointment);
+      emailService.sendAppointmentCancellationEmail(appointment,false);
+      emailService.sendAppointmentCancellationEmail(appointment,true);
     }
   }
 
