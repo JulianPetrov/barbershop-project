@@ -11,8 +11,8 @@
                         <h3 class="card-title font-weight-bold" th:text="${appointment.salonName}"></h3>
                     </div>
                 </div>
-                <p class="card-text" th:text="'Appointment start: ' + ${appointment.startDateTime}"></p>
-                <p class="card-text" th:text="'Appointment end: ' + ${appointment.endDateTime}"></p>
+                <p class="card-text" th:text="'Appointment start: ' + ${#temporals.format(appointment.startDateTime, 'dd-MM-yyyy, HH:mm')}"></p>
+                <p class="card-text" th:text="'Appointment end: ' + ${#temporals.format(appointment.endDateTime, 'dd-MM-yyyy, HH:mm')}"></p>
                 <p class="card-text" th:text="'Customer: ' + ${appointment.customerFullName}"></p>
                 <p class="card-text" th:text="'Barber: ' + ${appointment.employeeFullName}"></p>
 
